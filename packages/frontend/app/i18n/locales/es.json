@@ -1,0 +1,13 @@
+{
+	"coins": "monedas",
+	"loading": "Cargando...",
+	"error": "Algo salió mal",
+	"inviteAFriend": "Invitar a un amigo",
+	"youWereInvited": "¡Te uniste por invitación!",
+	"shareSuccess": "¡Invitación enviada!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

@@ -1,0 +1,13 @@
+{
+	"coins": "מטבעות",
+	"loading": "טוען...",
+	"error": "משהו השתבש",
+	"inviteAFriend": "הזמן חבר",
+	"youWereInvited": "הצטרפת דרך הזמנה!",
+	"shareSuccess": "ההזמנה נשלחה!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

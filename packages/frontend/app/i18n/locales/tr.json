@@ -1,0 +1,13 @@
+{
+	"coins": "jeton",
+	"loading": "Yükleniyor...",
+	"error": "Bir şeyler ters gitti",
+	"inviteAFriend": "Arkadaş davet et",
+	"youWereInvited": "Bir davetle katıldın!",
+	"shareSuccess": "Davet gönderildi!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

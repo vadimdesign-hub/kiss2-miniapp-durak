@@ -1,0 +1,39 @@
+environments:   
+  dev-fra1-01:
+    values:
+    - values-stage.yaml
+
+  prod-fra1-01:
+    values:
+    - values-prod.yaml
+
+---
+helmDefaults:
+  verify: false
+  wait: true
+  timeout: 300
+  recreatePods: false
+  force: false
+  atomic: false
+  createNamespace: true
+{{ if eq .Environment.Name "dev-fra1-01" }}
+  kubeContext: do-fra1-kiss2-dev-fra1-cluster
+{{ end }}
+{{ if eq .Environment.Name "prod-fra1-01" }}
+  kubeContext: do-fra1-kiss2-prod-fra1-cluster
+{{ end }}
+
+repositories:
+  - name: playneta
+    url: registry.digitalocean.com/playneta-registry/charts
+    oci: true
+
+releases:
+{{- range .Values.apps }}
+  - name: {{ .name }}
+    namespace: {{ .namespace }}
+    chart: {{ .chart }}
+    version: {{ .version }}
+    values:
+      - values-{{ $.Environment.Values.appEnv }}.yaml
+{{- end }}

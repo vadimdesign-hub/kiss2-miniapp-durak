@@ -1,0 +1,13 @@
+{
+	"coins": "νομίσματα",
+	"loading": "Φόρτωση...",
+	"error": "Κάτι πήγε στραβά",
+	"inviteAFriend": "Πρόσκληση φίλου",
+	"youWereInvited": "Συνδέθηκες μέσω πρόσκλησης!",
+	"shareSuccess": "Η πρόσκληση στάλθηκε!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

@@ -1,0 +1,13 @@
+{
+	"coins": "xu",
+	"loading": "Đang tải...",
+	"error": "Có lỗi xảy ra",
+	"inviteAFriend": "Mời bạn bè",
+	"youWereInvited": "Bạn đã tham gia qua lời mời!",
+	"shareSuccess": "Đã gửi lời mời!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

@@ -1,0 +1,28 @@
+{
+	"name": "kiss2-miniapp-template",
+	"private": true,
+	"type": "module",
+	"workspaces": ["packages/*"],
+	"scripts": {
+		"dev": "npm run --workspace=packages/backend dev & npm run --workspace=packages/frontend dev & wait",
+		"dev:frontend": "npm run --workspace=packages/frontend dev",
+		"dev:backend": "npm run --workspace=packages/backend dev",
+		"dev:consumer": "npm run --workspace=packages/backend dev:consumer",
+		"build": "npm run --workspaces --if-present build",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"typecheck": "npm run --workspaces --if-present typecheck",
+		"test": "npm run --workspaces --if-present test",
+		"db:generate": "npm run --workspace=packages/backend db:generate",
+		"db:migrate:dev": "npm run --workspace=packages/backend db:migrate:dev",
+		"db:migrate:deploy": "npm run --workspace=packages/backend db:migrate:deploy",
+		"fetch-api-docs": "bash scripts/fetch-api-docs.sh",
+		"fetch-api-docs:stage": "bash scripts/fetch-api-docs.sh stage",
+		"fetch-api-docs:prod": "bash scripts/fetch-api-docs.sh prod",
+		"deps:up": "docker compose -f deploy/docker-compose.yml up -d --force-recreate",
+		"deps:down": "docker compose -f deploy/docker-compose.yml down --volumes --remove-orphans"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4"
+	}
+}

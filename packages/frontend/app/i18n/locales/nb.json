@@ -1,0 +1,13 @@
+{
+	"coins": "mynter",
+	"loading": "Laster...",
+	"error": "Noe gikk galt",
+	"inviteAFriend": "Inviter en venn",
+	"youWereInvited": "Du ble med via invitasjon!",
+	"shareSuccess": "Invitasjon sendt!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

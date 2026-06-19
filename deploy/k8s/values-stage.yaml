@@ -1,0 +1,71 @@
+apps:
+  - name: template
+    namespace: miniapps
+    chart: playneta/miniapp
+    version: 0.2.1
+
+appEnv: stage
+
+project:
+  image: registry.digitalocean.com/playneta-registry/kiss2/kiss2-miniapp-template
+  imageVersion: latest
+  appEnv: stage
+
+env:
+  # Database and Redis will be substituted with values on ci/cd level
+  - name: APP_ENV
+    value: stage
+  - name: API_PORT
+    value: "3001"
+  - name: LOG_LEVEL
+    value: info
+  - name: NODE_ENV
+    value: production
+  - name: SENTRY_DSN
+    value: vault:kiss2/data/sentry#miniapp_backend_dsn
+  - name: SERVICE_NAME
+    value: template
+  - name: KAFKA_SEED_BROKERS
+    value: vault:kiss2/data/stage/digitalocean/fra1/redpanda#kafka_direct_uri
+  - name: KAFKA_USERNAME
+    value: vault:kiss2/data/stage/digitalocean/fra1/redpanda#kafka_username
+  - name: KAFKA_PASSWORD
+    value: vault:kiss2/data/stage/digitalocean/fra1/redpanda#kafka_password
+  - name: AUTH_SECRET_KEY
+    value: vault:kiss2/data/stage/digitalocean/fra1/auth_secret_key#key
+  - name: WALLET_API_URL
+    value: http://wallet-api-service.kiss.svc.cluster.local
+
+container:
+  port: 3001
+
+resources:
+  requests:
+    cpu: "10m"
+    memory: "128Mi"
+  limits:
+    memory: "128Mi"
+
+consumer:
+  enabled: true
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  name: api-miniapps-stage.kisskissplay.com
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.3"
+    nginx.ingress.kubernetes.io/proxy-body-size: "64m"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+  paths:
+    - /template/(.*|$)
+  pathType: Prefix
+  hosts:
+    - api-miniapps-stage.kisskissplay.com
+  tls:
+    - secretName: ssl-kisskissplay
+      hosts:
+        - api-miniapps-stage.kisskissplay.com

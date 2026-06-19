@@ -1,0 +1,15 @@
+{
+	"coins": "монеты",
+	"loading": "Загрузка...",
+	"error": "Что-то пошло не так",
+	"inviteAFriend": "Пригласить друга",
+	"youWereInvited": "Вы присоединились по приглашению!",
+	"shareSuccess": "Приглашение отправлено!",
+	"luckyDay": "Счастливый день",
+	"attemptsLeft_one": "{{count}} попытка осталась",
+	"attemptsLeft_few": "{{count}} попытки осталось",
+	"attemptsLeft_many": "{{count}} попыток осталось",
+	"attemptsLeft_other": "{{count}} попыток осталось",
+	"noAttemptsLeft": "Попыток не осталось",
+	"coinWon": "Вы выиграли {{count}} монет!"
+}

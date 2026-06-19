@@ -1,0 +1,50 @@
+{
+	"name": "@miniapp/backend",
+	"version": "1.0.0",
+	"description": "Miniapp backend — Fastify + Prisma + Redis + Redpanda",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"dev:consumer": "tsx watch src/consumer.ts",
+		"build": "tsc",
+		"start": "node --import ./dist/instrument.js dist/index.js",
+		"start:consumer": "node --import ./dist/instrument.js dist/consumer.js",
+		"typecheck": "tsc --noEmit",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"db:generate": "prisma generate",
+		"db:migrate:dev": "prisma migrate dev",
+		"db:migrate:deploy": "prisma migrate deploy",
+		"db:studio": "prisma studio",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"dependencies": {
+		"@fastify/compress": "^8.0.1",
+		"@fastify/sensible": "^6.0.2",
+		"@fastify/swagger": "^9.4.2",
+		"@fastify/swagger-ui": "^5.2.1",
+		"@fastify/type-provider-typebox": "^6.1.0",
+		"@fastify/websocket": "^11.2.0",
+		"@playneta/node-kiss2-lib": "^0.7.0",
+		"@prisma/adapter-pg": "^6.6.0",
+		"@prisma/client": "^6.6.0",
+		"@sentry/node": "^9.11.0",
+		"dotenv": "^16.6.1",
+		"fastify": "^5.3.3",
+		"fastify-metrics": "^13.2.0",
+		"fastify-plugin": "^5.0.1",
+		"kafkajs": "^2.2.4",
+		"pino": "^9.6.0",
+		"redis": "^5.0.1",
+		"typebox": "^1.0.79"
+	},
+	"devDependencies": {
+		"@types/node": "^22.14.1",
+		"pino-pretty": "^13.0.0",
+		"prisma": "^6.6.0",
+		"tsx": "^4.19.3",
+		"typescript": "^5.8.3",
+		"vitest": "^3.1.1"
+	}
+}

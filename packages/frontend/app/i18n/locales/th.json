@@ -1,0 +1,13 @@
+{
+	"coins": "เหรียญ",
+	"loading": "กำลังโหลด...",
+	"error": "มีบางอย่างผิดพลาด",
+	"inviteAFriend": "เชิญเพื่อน",
+	"youWereInvited": "คุณเข้าร่วมผ่านคำเชิญ!",
+	"shareSuccess": "ส่งคำเชิญแล้ว!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

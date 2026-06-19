@@ -1,0 +1,13 @@
+{
+	"coins": "syiling",
+	"loading": "Memuatkan...",
+	"error": "Sesuatu telah berlaku",
+	"inviteAFriend": "Jemput rakan",
+	"youWereInvited": "Anda menyertai melalui jemputan!",
+	"shareSuccess": "Jemputan dihantar!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

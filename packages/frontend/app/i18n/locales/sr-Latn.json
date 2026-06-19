@@ -1,0 +1,13 @@
+{
+	"coins": "novčići",
+	"loading": "Učitavanje...",
+	"error": "Nešto je pošlo po zlu",
+	"inviteAFriend": "Pozovi prijatelja",
+	"youWereInvited": "Pridružio si se preko poziva!",
+	"shareSuccess": "Poziv poslat!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

@@ -1,0 +1,61 @@
+name: Build and Deploy to specific env
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to build and deploy'
+        required: true
+        default: 'stage'
+        type: choice
+        options:
+          - stage
+          - prod
+
+jobs:
+  frontend-deploy:
+    uses: playneta/devops-github-workflows/.github/workflows/miniapp-frontend-deploy.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      source_dir: packages/frontend/build/client
+      spaces_bucket: kiss2-miniapps-${{ inputs.environment }}
+      spaces_region: ams3
+      purge_cdn_cache: true
+    secrets:
+      aws_access_key_id: ${{ secrets.MINIAPPS_AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.MINIAPPS_AWS_SECRET_ACCESS_KEY }}
+      playneta_github_token: ${{ secrets.PLAYNETA_GITHUB_TOKEN }}
+      sentry_dsn: ${{ secrets.MINIAPPS_SENTRY_DSN }}
+      yc_access_key_id: ${{ secrets.YC_ACCESS_KEY_ID }}
+      yc_secret_access_key: ${{ secrets.YC_SECRET_ACCESS_KEY }}
+      digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      yc_sa_key_json: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+  backend-build:
+    uses: playneta/devops-github-workflows/.github/workflows/miniapp-backend-build.yml@main
+    secrets:
+      digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      playneta_github_user: ${{ secrets.PLAYNETA_GITHUB_USER }}
+      playneta_github_token: ${{ secrets.PLAYNETA_GITHUB_TOKEN }}
+      dockerhub_username: ${{ secrets.DOCKER_LOGIN }}
+      dockerhub_password: ${{ secrets.DOCKER_PASSWORD }}
+
+  database-provision:
+    needs: [backend-build]
+    uses: playneta/devops-github-workflows/.github/workflows/miniapp-database-provision.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      valkey_db: 1
+    secrets:
+      playneta_github_token: ${{ secrets.PLAYNETA_GITHUB_TOKEN }}
+      vault_token: ${{ secrets.VAULT_TOKEN }}
+
+  backend-deploy:
+    needs: [backend-build, database-provision]
+    uses: playneta/devops-github-workflows/.github/workflows/miniapp-backend-deploy.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      image_tag: ${{ needs.backend-build.outputs.image_tag }}
+      valkey_db: 1
+    secrets:
+      digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      playneta_github_token: ${{ secrets.PLAYNETA_GITHUB_TOKEN }}

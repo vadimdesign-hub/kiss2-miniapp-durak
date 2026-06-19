@@ -1,0 +1,13 @@
+{
+	"coins": "монети",
+	"loading": "Зареждане...",
+	"error": "Нещо се обърка",
+	"inviteAFriend": "Покани приятел",
+	"youWereInvited": "Присъедини се чрез покана!",
+	"shareSuccess": "Поканата е изпратена!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

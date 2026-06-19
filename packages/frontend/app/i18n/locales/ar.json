@@ -1,0 +1,13 @@
+{
+	"coins": "عملات",
+	"loading": "جارٍ التحميل...",
+	"error": "حدث خطأ ما",
+	"inviteAFriend": "ادعُ صديقًا",
+	"youWereInvited": "انضممت عبر دعوة!",
+	"shareSuccess": "تم إرسال الدعوة!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}

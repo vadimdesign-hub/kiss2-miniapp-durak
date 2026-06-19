@@ -1,0 +1,13 @@
+{
+	"coins": "mince",
+	"loading": "Načítání...",
+	"error": "Něco se pokazilo",
+	"inviteAFriend": "Pozvat kamaráda",
+	"youWereInvited": "Připojil ses přes pozvánku!",
+	"shareSuccess": "Pozvánka odeslána!",
+	"luckyDay": "Lucky Day",
+	"attemptsLeft_one": "{{count}} attempt left",
+	"attemptsLeft_other": "{{count}} attempts left",
+	"noAttemptsLeft": "No attempts left",
+	"coinWon": "You won {{count}} coins!"
+}
