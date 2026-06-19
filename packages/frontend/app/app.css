@@ -3,6 +3,138 @@
 @theme {
 	--font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
 		"Segoe UI Symbol", "Noto Color Emoji";
+	--font-ubuntu: "Ubuntu", ui-sans-serif, system-ui, sans-serif;
+
+	/* ── Type scale ─────────────────────────────── */
+	--text-h0: 3rem;      /* 48px */
+	--text-h1: 2rem;      /* 32px */
+	--text-h2: 1.5rem;    /* 24px */
+	--text-h3: 1.375rem;  /* 22px */
+	--text-h4: 1.25rem;   /* 20px */
+	--text-h5: 1.125rem;  /* 18px */
+	--text-h6: 1rem;      /* 16px */
+	--text-h7: 0.875rem;  /* 14px */
+	--text-h8: 0.75rem;   /* 12px */
+	--text-h9: 0.625rem;  /* 10px */
+
+	/* ── Font weights ───────────────────────────── */
+	--font-weight-regular: 400;
+	--font-weight-bold: 700;
+
+	--animate-pop-in: pop-in 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+	--animate-fade-in: fade-in 0.2s ease both;
+	--animate-slide-up: slide-up 0.22s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+	--animate-capture-out: capture-out 0.25s ease-out both;
+	--animate-win-pulse: win-pulse 0.7s ease-in-out infinite alternate;
+	--animate-card-launch: card-launch 0.42s cubic-bezier(0.35, 0, 0.55, 1) forwards;
+	--animate-card-reject: card-reject 0.65s ease-out both;
+	--animate-bot-card-launch: bot-card-launch 0.44s cubic-bezier(0.35, 0, 0.6, 1) forwards;
+	--animate-sheet-up: sheet-up 0.38s cubic-bezier(0.32, 0.72, 0, 1) both;
+	--animate-sheet-down: sheet-down 0.30s cubic-bezier(0.4, 0, 1, 1) both;
+	--animate-backdrop-in: fade-in 0.28s ease both;
+	--animate-backdrop-out: fade-out 0.26s ease both;
+	--animate-table-fly-opp: table-fly-opp 0.45s cubic-bezier(0.4,0,0.8,0.6) both;
+	--animate-table-fly-me:  table-fly-me  0.45s cubic-bezier(0.4,0,0.8,0.6) both;
+
+	@keyframes pop-in {
+		from { opacity: 0; transform: scale(0.3); }
+		to   { opacity: 1; transform: scale(1); }
+	}
+	@keyframes fade-in {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+	@keyframes spin {
+		from { transform: rotate(0deg); }
+		to   { transform: rotate(360deg); }
+	}
+	@keyframes slide-up {
+		from { opacity: 0; transform: translateY(24px) scale(0.85); }
+		to   { opacity: 1; transform: translateY(0) scale(1); }
+	}
+	@keyframes capture-out {
+		from { opacity: 1; transform: scale(1); }
+		to   { opacity: 0; transform: scale(0.2) rotate(45deg); }
+	}
+	@keyframes win-pulse {
+		from { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4); }
+		to   { box-shadow: 0 0 0 8px rgba(250, 204, 21, 0); }
+	}
+	@keyframes card-launch {
+		0%   { transform: translateY(0) scale(1); opacity: 1; }
+		60%  { transform: translateY(-90px) scale(0.82); opacity: 0.7; }
+		100% { transform: translateY(-180px) scale(0.5); opacity: 0; }
+	}
+	@keyframes bot-card-launch {
+		0%   { transform: translateY(-140px) scale(0.7);  opacity: 0; }
+		12%  { opacity: 1; }
+		70%  { transform: translateY(18px)  scale(1.04); opacity: 1; }
+		100% { transform: translateY(24px)  scale(0.96); opacity: 0; }
+	}
+	@keyframes sheet-up {
+		from { transform: translateY(100%); }
+		to   { transform: translateY(0); }
+	}
+	@keyframes fly-draw-me {
+		0%   { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+		85%  { opacity: 1; }
+		100% { transform: translate(-42vw, 78vh) scale(1.6) rotate(8deg); opacity: 0; }
+	}
+	@keyframes fly-draw-opp {
+		0%   { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+		85%  { opacity: 1; }
+		100% { transform: translate(-42vw, 80px) scale(1.4) rotate(-8deg); opacity: 0; }
+	}
+	@keyframes sheet-down {
+		from { transform: translateY(0); }
+		to   { transform: translateY(100%); }
+	}
+	@keyframes fade-out {
+		from { opacity: 1; }
+		to   { opacity: 0; }
+	}
+	@keyframes table-fly-opp {
+		0%   { transform: translateY(0) scale(1);             opacity: 1; }
+		100% { transform: translateY(-560px) rotate(18deg) scale(0.08); opacity: 0; }
+	}
+	@keyframes table-fly-me {
+		0%   { transform: translateY(0) scale(1);              opacity: 1; }
+		100% { transform: translateY(560px) rotate(-18deg) scale(0.08); opacity: 0; }
+	}
+	@keyframes card-reject {
+		0%   { transform: translateY(0); }
+		18%  { transform: translateY(-20px); }
+		34%  { transform: translateY(-16px) translateX(-8px); }
+		50%  { transform: translateY(-11px) translateX(8px); }
+		65%  { transform: translateY(-6px) translateX(-5px); }
+		80%  { transform: translateY(-2px) translateX(4px); }
+		100% { transform: translateY(0); }
+	}
+}
+
+@keyframes table-fly-opp {
+	0%   { transform: translateY(0) scale(1);                       opacity: 1; }
+	100% { transform: translateY(-560px) rotate(18deg) scale(0.08); opacity: 0; }
+}
+@keyframes table-fly-me {
+	0%   { transform: translateY(0) scale(1);                       opacity: 1; }
+	100% { transform: translateY(560px) rotate(-18deg) scale(0.08); opacity: 0; }
+}
+
+/* Draw-from-deck animations — global scope so `animation: fly-draw-me ...` resolves.
+   Values are tuned for a typical phone viewport: deck sits near top-right, my hand
+   is bottom-center, opponent's hand is top-center (near the chair). */
+@keyframes fly-draw-me {
+	0%   { transform: translate(0, 0) scale(0);                          opacity: 0; }
+	10%  { transform: translate(0, 0) scale(1) rotate(0deg);             opacity: 1; }
+	85%  { opacity: 1; }
+	100% { transform: translate(-42vw, 78vh) scale(1.6) rotate(8deg);   opacity: 0; }
+}
+@keyframes fly-draw-opp {
+	0%   { transform: translate(0, 0) scale(0);                          opacity: 0; }
+	10%  { transform: translate(0, 0) scale(1) rotate(0deg);             opacity: 1; }
+	85%  { opacity: 1; }
+	100% { transform: translate(-42vw, 80px) scale(1.4) rotate(-8deg);  opacity: 0; }
 }
 
 html,
@@ -11,7 +143,9 @@ body {
 	color-scheme: dark;
 	height: 100%;
 	width: 100%;
-	overflow: hidden;
+	/* Prevent rubber-band / pull-to-refresh on all pages.
+	   Scrollable pages work normally; games use fixed containers. */
+	overscroll-behavior: none;
 }
 
 /* 1. Use a more-intuitive box-sizing model */

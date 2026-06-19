@@ -1,5 +1,5 @@
 apps:
-  - name: template
+  - name: durak
     namespace: miniapps
     chart: playneta/miniapp
     version: 0.2.1
@@ -7,7 +7,7 @@ apps:
 appEnv: stage
 
 project:
-  image: registry.digitalocean.com/playneta-registry/kiss2/kiss2-miniapp-template
+  image: registry.digitalocean.com/playneta-registry/kiss2/kiss2-miniapp-durak
   imageVersion: latest
   appEnv: stage
 
@@ -24,7 +24,7 @@ env:
   - name: SENTRY_DSN
     value: vault:kiss2/data/sentry#miniapp_backend_dsn
   - name: SERVICE_NAME
-    value: template
+    value: durak
   - name: KAFKA_SEED_BROKERS
     value: vault:kiss2/data/stage/digitalocean/fra1/redpanda#kafka_direct_uri
   - name: KAFKA_USERNAME
@@ -36,8 +36,13 @@ env:
   - name: WALLET_API_URL
     value: http://wallet-api-service.kiss.svc.cluster.local
 
+replicaCount: 1
+
 container:
   port: 3001
+
+consumer:
+  enabled: false
 
 resources:
   requests:
@@ -45,9 +50,6 @@ resources:
     memory: "128Mi"
   limits:
     memory: "128Mi"
-
-consumer:
-  enabled: true
 
 ingress:
   enabled: true
@@ -60,8 +62,14 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-body-size: "64m"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: 'true'
+    # WebSocket support — keep connections alive for up to 1 hour
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+    # Force HTTP/1.1 upstream — required for WebSocket Upgrade handshake
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
   paths:
-    - /template/(.*|$)
+    - /durak/(.*|$)
   pathType: Prefix
   hosts:
     - api-miniapps-stage.kisskissplay.com

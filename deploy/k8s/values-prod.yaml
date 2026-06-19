@@ -1,5 +1,5 @@
 apps:
-  - name: template
+  - name: durak
     namespace: miniapps
     chart: playneta/miniapp
     version: 0.2.1
@@ -8,7 +8,7 @@ appEnv: prod
 
 
 project:
-  image: registry.digitalocean.com/playneta-registry/kiss2/kiss2-miniapp-template
+  image: registry.digitalocean.com/playneta-registry/kiss2/kiss2-miniapp-durak
   imageVersion: latest
   appEnv: prod
 
@@ -25,7 +25,7 @@ env:
   - name: SENTRY_DSN
     value: vault:kiss2/data/sentry#miniapp_backend_dsn
   - name: SERVICE_NAME
-    value: template
+    value: durak
   - name: KAFKA_SEED_BROKERS
     value: vault:kiss2/data/prod/digitalocean/fra1/redpanda#kafka_direct_uri
   - name: KAFKA_USERNAME
@@ -40,15 +40,15 @@ env:
 container:
   port: 3001
 
+consumer:
+  enabled: true
+
 resources:
   requests:
     cpu: "10m"
     memory: "128Mi"
   limits:
     memory: "128Mi"
-
-consumer:
-  enabled: true
 
 ingress:
   enabled: true
@@ -62,7 +62,7 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: 'true'
   paths:
-    - /template/(.*|$)
+    - /durak/(.*|$)
   pathType: Prefix
   hosts:
     - api-miniapps-prod.kisskissplay.com

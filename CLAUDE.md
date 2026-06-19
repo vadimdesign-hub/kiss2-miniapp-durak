@@ -249,9 +249,9 @@ All Kafka infrastructure is provided by `@playneta/node-kiss2-lib`. Use `KafkaPr
 
 Topics follow the pattern: `miniapp.{serviceName}.{object}.{action}`
 
-The service name (`kiss2-miniapp-template`) is defined as a local constant `SERVICE_NAME` in `app.ts` and `service.ts`.
+The service name (`kiss2-miniapp-durak`) is defined as a local constant `SERVICE_NAME` in `app.ts` and `service.ts`.
 
-Example: `miniapp.kiss2-miniapp-template.luckyCoin.created`
+Example: `miniapp.kiss2-miniapp-durak.luckyCoin.created`
 
 ### Publishing Events
 
@@ -620,7 +620,7 @@ The inner `payload` is one of four shapes:
 
 Redis connection is provided by `redisPlugin` from `@playneta/node-kiss2-lib/plugins`. It decorates the Fastify instance with `fastify.redis`.
 
-**Key prefixing rule**: ALWAYS prefix all Redis keys with `SERVICE_NAME` to avoid collisions with other miniapps sharing the same Redis instance. Example: `kiss2-miniapp-template:luckyCoin:{userId}`.
+**Key prefixing rule**: ALWAYS prefix all Redis keys with `SERVICE_NAME` to avoid collisions with other miniapps sharing the same Redis instance. Example: `kiss2-miniapp-durak:luckyCoin:{userId}`.
 
 ## Health Probes
 

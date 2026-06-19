@@ -1,4 +1,5 @@
 import fastifyCompress from "@fastify/compress";
+import fastifyRateLimit from "@fastify/rate-limit";
 import fastifySensible from "@fastify/sensible";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUI from "@fastify/swagger-ui";
@@ -8,7 +9,6 @@ import * as Sentry from "@sentry/node";
 import Fastify, { type FastifyInstance } from "fastify";
 import metricsPlugin from "fastify-metrics";
 
-import { createMiniappFetch } from "@playneta/node-kiss2-lib/clients";
 import {
 	analyticsPlugin,
 	authPlugin,
@@ -19,8 +19,15 @@ import {
 
 import { type Env, loadEnv } from "./config/index.js";
 import { databasePlugin } from "./infra/database/plugin.js";
+import { analyticsEventRoutes } from "./modules/analytics/routes.js";
 import { dailyMessageRoutes } from "./modules/daily-message/routes.js";
+import { gameRoutes } from "./modules/game/routes.js";
+import { gameHistoryRoutes } from "./modules/gameHistory/routes.js";
+import { gameResultRoutes } from "./modules/gameResult/routes.js";
+import { leaderboardRoutes } from "./modules/leaderboard/routes.js";
 import { luckyCoinRoutes } from "./modules/lucky-coin/routes.js";
+import { matchmakingHttpRoutes } from "./modules/matchmaking/httpRoutes.js";
+import { playerStatRoutes } from "./modules/playerStat/routes.js";
 
 export interface BuildAppOptions {
 	env?: Env;
@@ -73,12 +80,25 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
 		encodings: ["gzip", "deflate"],
 	});
 
-	// --- Outbound HTTP ---
-	// One miniapp-aware fetch per process. Stamps `X-Miniapp` and a default
-	// `X-Forward-Role: admin`, retries on 429/5xx/network errors. Pass into any
-	// route plugin or service that calls platform backends — never use the
-	// global `fetch` directly.
-	const miniappFetch = createMiniappFetch({ serviceName: env.SERVICE_NAME });
+	await app.register(fastifyRateLimit, {
+		// Polling-based MP needs lots of requests: each game session does
+		// ~100 /poll per minute (600ms interval) per player, plus moves +
+		// heartbeats + pollNow recoveries. The old 100/min limit choked
+		// this — clients would 429-loop and the game would hang. We now
+		// allow generous headroom and skip the high-frequency
+		// matchmaking endpoints from rate-limiting entirely.
+		max: 600,
+		timeWindow: "1 minute",
+		allowList: (req) => {
+			const url = req.url ?? "";
+			return (
+				url.includes("/matchmaking/poll")
+				|| url.includes("/matchmaking/move")
+				|| url.includes("/matchmaking/joinQueue")
+				|| url.includes("/matchmaking/leaveQueue")
+			);
+		},
+	});
 
 	// --- Swagger ---
 
@@ -122,11 +142,11 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
 		secretKey: env.AUTH_SECRET_KEY,
 		// WebSocket routes handle auth via first-message pattern (browser WS API
 		// does not support custom headers on the upgrade request).
-		skipPaths: ["/api/v1/dailyMessage"],
+		skipPaths: ["/api/v1/dailyMessage", "/api/v1/dev/seed", "/api/v1/matchmaking/debug"],
 	});
 	await app.register(analyticsPlugin);
 
-	// --- WebSocket ---
+	// --- WebSocket plugin (used only by daily-message; matchmaking uses HTTP polling) ---
 
 	await app.register(fastifyWebsocket);
 
@@ -137,8 +157,18 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
 		prefix: "/api/v1",
 		walletApiUrl: env.WALLET_API_URL,
 		serviceName: env.SERVICE_NAME,
-		fetch: miniappFetch,
 	});
+	await app.register(gameRoutes, { prefix: "/api/v1" });
+	await app.register(playerStatRoutes, { prefix: "/api/v1" });
+	await app.register(leaderboardRoutes, { prefix: "/api/v1" });
+	await app.register(gameHistoryRoutes, { prefix: "/api/v1" });
+	await app.register(matchmakingHttpRoutes, { prefix: "/api/v1" });
+	await app.register(gameResultRoutes, {
+		prefix: "/api/v1",
+		walletApiUrl: env.WALLET_API_URL,
+		serviceName: env.SERVICE_NAME,
+	});
+	await app.register(analyticsEventRoutes, { prefix: "/api/v1" });
 
 	return app;
 }

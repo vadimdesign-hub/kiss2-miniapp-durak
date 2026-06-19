@@ -4,8 +4,6 @@ import { Type } from "typebox";
 
 import { LuckyCoinExhaustedError, LuckyCoinService } from "./service.js";
 
-type FetchFn = typeof fetch;
-
 const LuckyCoinStatusResponse = Type.Object({
 	attemptsUsed: Type.Integer(),
 	attemptsLeft: Type.Integer(),
@@ -19,7 +17,6 @@ const LuckyCoinClaimResponse = Type.Object({
 export const luckyCoinRoutes: FastifyPluginAsync<{
 	walletApiUrl: string;
 	serviceName: string;
-	fetch: FetchFn;
 }> = async (fastify, opts) => {
 	const app = fastify.withTypeProvider<TypeBoxTypeProvider>();
 	const service = new LuckyCoinService(
@@ -27,7 +24,6 @@ export const luckyCoinRoutes: FastifyPluginAsync<{
 		app.kafka.producer,
 		opts.walletApiUrl,
 		opts.serviceName,
-		opts.fetch,
 		app.log,
 	);
 

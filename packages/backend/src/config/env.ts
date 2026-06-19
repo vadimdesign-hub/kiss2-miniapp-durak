@@ -4,11 +4,6 @@ import { Value } from "typebox/value";
 
 const EnvSchema = Type.Object({
 	API_PORT: Type.Number({ default: 3001 }),
-	// Optional override for the consumer process's probe/metrics port. In
-	// production each process runs in its own pod and can reuse API_PORT; set
-	// this only when running the consumer alongside the HTTP server on the
-	// same host (local dev).
-	CONSUMER_PORT: Type.Optional(Type.Number()),
 	APP_ENV: Type.Union([Type.Literal("stage"), Type.Literal("prod")], { default: "stage" }),
 	SERVICE_NAME: Type.String(),
 	LOG_LEVEL: Type.Union(
@@ -32,6 +27,7 @@ const EnvSchema = Type.Object({
 
 	// Service-specific API URLs
 	WALLET_API_URL: Type.String({ default: "https://api-stage.kisskissplay.com/wallet" }),
+	REWARDS_API_URL: Type.String({ default: "https://api-stage.kisskissplay.com/rewards" }),
 
 	// Auth
 	AUTH_SECRET_KEY: Type.String(),
@@ -54,7 +50,6 @@ export function loadEnv(): Env {
 	const raw: Record<string, unknown> = {
 		...process.env,
 		API_PORT: process.env.API_PORT ? Number(process.env.API_PORT) : undefined,
-		CONSUMER_PORT: process.env.CONSUMER_PORT ? Number(process.env.CONSUMER_PORT) : undefined,
 	};
 
 	Value.Default(EnvSchema, raw);

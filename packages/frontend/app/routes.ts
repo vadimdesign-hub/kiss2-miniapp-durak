@@ -1,8 +1,11 @@
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
+	// Single-game shell: app starts directly in durak matchmaking.
+	// Home / mode-picker / leaderboard / checkers are removed per spec.
 	index("routes/home.tsx"),
-	// Catch-all: S3 static hosting serves index.html at paths like /template/index.html
-	// which React Router doesn't match to "/". This splat ensures all paths render home.
+	route("match/:gameType", "routes/match.tsx"),
+	route("game/durak/:sessionId", "routes/game/durak.tsx"),
+	route("game-over", "routes/game-over.tsx"),
 	route("*", "routes/catch-all.tsx"),
 ] satisfies RouteConfig;

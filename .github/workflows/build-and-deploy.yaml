@@ -51,6 +51,7 @@ jobs:
 
   backend-deploy:
     needs: [backend-build, database-provision]
+    if: ${{ always() && needs.backend-build.result == 'success' }}
     uses: playneta/devops-github-workflows/.github/workflows/miniapp-backend-deploy.yml@main
     with:
       environment: ${{ inputs.environment }}

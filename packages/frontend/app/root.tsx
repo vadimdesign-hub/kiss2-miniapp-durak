@@ -1,7 +1,5 @@
 import { FlutterBridgeProvider } from "@playneta/flutter-js-bridge";
 import * as Sentry from "@sentry/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import {
 	Links,
 	Meta,
@@ -12,7 +10,6 @@ import {
 } from "react-router";
 
 import { GLOBAL_BACKEND_BASE_URL } from "~/config";
-import { RTL_LANGUAGES, useT } from "~/i18n";
 import type { Route } from "./+types/root";
 import "./app.css";
 import "./instrument";
@@ -26,7 +23,7 @@ export const links: Route.LinksFunction = () => [
 	},
 	{
 		rel: "stylesheet",
-		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+		href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap",
 	},
 ];
 
@@ -56,44 +53,19 @@ export function HydrateFallback() {
 	);
 }
 
-function LangSync() {
-	const { lang } = useT();
-	useEffect(() => {
-		if (typeof document === "undefined") return;
-		document.documentElement.lang = lang;
-		document.documentElement.dir = RTL_LANGUAGES.has(lang) ? "rtl" : "ltr";
-	}, [lang]);
-	return null;
-}
-
 export default function App() {
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				defaultOptions: {
-					queries: {
-						retry: 1,
-						refetchOnWindowFocus: false,
-					},
-				},
-			}),
-	);
-
 	return (
-		<QueryClientProvider client={queryClient}>
-			<FlutterBridgeProvider
-				apiBaseUrl={GLOBAL_BACKEND_BASE_URL}
-				localMode={import.meta.env.DEV}
-				fallback={
-					<div className="flex items-center justify-center min-h-screen bg-[#1a1a1a]">
-						<div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-600 border-t-orange-400" />
-					</div>
-				}
-			>
-				<LangSync />
-				<Outlet />
-			</FlutterBridgeProvider>
-		</QueryClientProvider>
+		<FlutterBridgeProvider
+			apiBaseUrl={GLOBAL_BACKEND_BASE_URL}
+			localMode={import.meta.env.DEV}
+			fallback={
+				<div className="flex items-center justify-center min-h-screen bg-[#1a1a1a]">
+					<div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-600 border-t-orange-400" />
+				</div>
+			}
+		>
+			<Outlet />
+		</FlutterBridgeProvider>
 	);
 }
 

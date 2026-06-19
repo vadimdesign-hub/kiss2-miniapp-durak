@@ -3,8 +3,6 @@ import type { AnalyticsHeaders } from "@playneta/node-kiss2-lib/types";
 import type { FastifyBaseLogger } from "fastify";
 import type { PrismaClient } from "../../generated/prisma/client.js";
 
-type FetchFn = typeof fetch;
-
 const MAX_ATTEMPTS = 5;
 const MIN_COINS = 1;
 const MAX_COINS = 10;
@@ -24,18 +22,13 @@ function randomCoinAmount(): number {
 }
 
 export class LuckyCoinService {
-	private readonly source: string;
-
 	constructor(
 		private readonly prisma: PrismaClient,
 		private readonly producer: KafkaProducerService,
 		private readonly walletApiUrl: string,
-		serviceName: string,
-		private readonly fetch: FetchFn,
+		private readonly serviceName: string,
 		private readonly logger: FastifyBaseLogger,
-	) {
-		this.source = `miniapp:${serviceName}`;
-	}
+	) {}
 
 	async getStatus(userId: string): Promise<LuckyCoinStatus> {
 		const attemptsUsed = await this.prisma.luckyCoinAttempt.count({
@@ -59,12 +52,15 @@ export class LuckyCoinService {
 
 		const amount = randomCoinAmount();
 
-		const attempt = await this.prisma.luckyCoinAttempt.create({
+		// Issue coins via global backend wallet API
+		await this.issueCoins(userId, amount);
+
+		// Record attempt in local DB
+		await this.prisma.luckyCoinAttempt.create({
 			data: { userId, amount },
 		});
 
-		await this.issueCoins(userId, amount, attempt.id);
-
+		// Emit event to Kafka
 		const eventData = { userId, amount };
 		await this.producer.sendCreated("luckyCoin", eventData, analyticsHeaders);
 
@@ -79,13 +75,14 @@ export class LuckyCoinService {
 		};
 	}
 
-	private async issueCoins(userId: string, amount: number, attemptId: string): Promise<void> {
+	private async issueCoins(userId: string, amount: number): Promise<void> {
 		const url = `${this.walletApiUrl}/api/v1/userBalance/transaction`;
 
-		const response = await this.fetch(url, {
+		const response = await fetch(url, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"X-Forward-Role": "admin",
 				"X-Forward-User-Id": userId,
 			},
 			body: JSON.stringify([
@@ -93,11 +90,7 @@ export class LuckyCoinService {
 					userId,
 					type: "coin",
 					quantity: amount,
-					source: this.source,
-					meta: {
-						kind: "luckyCoin.payout",
-						attemptId,
-					},
+					source: `${this.serviceName}.lucky-coin`,
 				},
 			]),
 		});

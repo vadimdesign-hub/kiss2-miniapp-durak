@@ -17,3 +17,37 @@ model LuckyCoinAttempt {
   @@index([userId])
   @@map("lucky_coin_attempts")
 }
+
+model GameSession {
+  id          String      @id @default(uuid()) @db.Uuid
+  gameType    String      @map("game_type")
+  playerOneId String      @db.Uuid @map("player_one_id")
+  playerTwoId String      @db.Uuid @map("player_two_id")
+  status      String      @default("active") // active | finished | abandoned
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  result      GameResult?
+
+  @@index([playerOneId])
+  @@index([playerTwoId])
+  @@index([status])
+  @@map("game_sessions")
+}
+
+model GameResult {
+  id              String      @id @default(uuid()) @db.Uuid
+  sessionId       String      @unique @db.Uuid @map("session_id")
+  session         GameSession @relation(fields: [sessionId], references: [id])
+  gameType        String      @map("game_type")
+  winnerId        String?     @map("winner_id")
+  loserId         String?     @map("loser_id")
+  isDraw          Boolean     @default(false) @map("is_draw")
+  durationSeconds Int         @map("duration_seconds")
+  coinsAwarded    Int         @default(0) @map("coins_awarded")
+  createdAt       DateTime    @default(now()) @map("created_at")
+
+  @@index([winnerId])
+  @@index([loserId])
+  @@index([createdAt])
+  @@map("game_results")
+}

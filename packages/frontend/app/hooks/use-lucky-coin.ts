@@ -1,6 +1,5 @@
 import { useBridgeFetch } from "@playneta/flutter-js-bridge";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { API_BASE_URL } from "~/config";
 
@@ -13,78 +12,62 @@ interface LuckyCoinState {
 	readonly claim: () => Promise<void>;
 }
 
-interface ClaimResponse {
-	readonly amount: number;
-	readonly attemptsLeft: number;
-}
-
-interface StatusResponse {
-	readonly attemptsLeft: number;
-}
-
-const LUCKY_COIN_STATUS_QUERY_KEY = ["luckyCoinStatus"] as const;
-
 export function useLuckyCoin(): LuckyCoinState {
 	const bridgeFetch = useBridgeFetch();
-	const queryClient = useQueryClient();
+	const [attemptsLeft, setAttemptsLeft] = useState<number | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [claiming, setClaiming] = useState(false);
 	const [lastWin, setLastWin] = useState<number | null>(null);
+	const [error, setError] = useState<string | null>(null);
 
-	const statusQuery = useQuery<StatusResponse, Error>({
-		queryKey: LUCKY_COIN_STATUS_QUERY_KEY,
-		queryFn: async () => {
-			const res = await bridgeFetch(`${API_BASE_URL}/api/v1/luckyCoin/status`);
-			if (!res.ok) throw new Error("status_failed");
-			return (await res.json()) as StatusResponse;
-		},
-	});
+	useEffect(() => {
+		let cancelled = false;
 
-	const claimMutation = useMutation<ClaimResponse | { readonly attemptsLeft: 0 }, Error, void>({
-		mutationFn: async () => {
+		const fetchStatus = async () => {
+			try {
+				const res = await bridgeFetch(`${API_BASE_URL}/api/v1/luckyCoin/status`);
+				if (!cancelled && res.ok) {
+					const data = (await res.json()) as { attemptsLeft: number };
+					setAttemptsLeft(data.attemptsLeft);
+				}
+			} catch {
+				if (!cancelled) setError("Failed to load status");
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		};
+
+		fetchStatus();
+		return () => {
+			cancelled = true;
+		};
+	}, [bridgeFetch]);
+
+	const claim = useCallback(async () => {
+		setClaiming(true);
+		setError(null);
+		setLastWin(null);
+
+		try {
 			const res = await bridgeFetch(`${API_BASE_URL}/api/v1/luckyCoin/claim`, {
 				method: "POST",
 			});
+
 			if (res.ok) {
-				return (await res.json()) as ClaimResponse;
-			}
-			if (res.status === 429) {
-				return { attemptsLeft: 0 };
-			}
-			throw new Error("claim_failed");
-		},
-		onSuccess: (data) => {
-			if ("amount" in data) {
+				const data = (await res.json()) as { amount: number; attemptsLeft: number };
 				setLastWin(data.amount);
+				setAttemptsLeft(data.attemptsLeft);
+			} else if (res.status === 429) {
+				setAttemptsLeft(0);
+			} else {
+				setError("Failed to claim");
 			}
-			// Source of truth for attemptsLeft is the status endpoint; the claim
-			// response carries a fresh value, so seed the cache instead of refetching.
-			queryClient.setQueryData<StatusResponse>(LUCKY_COIN_STATUS_QUERY_KEY, {
-				attemptsLeft: data.attemptsLeft,
-			});
-		},
-	});
-
-	const claim = useCallback(async () => {
-		setLastWin(null);
-		try {
-			await claimMutation.mutateAsync();
 		} catch {
-			// Error surface is exposed via claimMutation.error below.
+			setError("Failed to claim");
+		} finally {
+			setClaiming(false);
 		}
-	}, [claimMutation]);
+	}, [bridgeFetch]);
 
-	const error =
-		statusQuery.error || claimMutation.error
-			? statusQuery.error
-				? "Failed to load status"
-				: "Failed to claim"
-			: null;
-
-	return {
-		attemptsLeft: statusQuery.data?.attemptsLeft ?? null,
-		loading: statusQuery.isLoading,
-		claiming: claimMutation.isPending,
-		lastWin,
-		error,
-		claim,
-	};
+	return { attemptsLeft, loading, claiming, lastWin, error, claim };
 }

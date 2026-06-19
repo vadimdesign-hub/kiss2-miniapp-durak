@@ -1,5 +1,5 @@
 {
-	"name": "kiss2-miniapp-template",
+	"name": "kiss2-miniapp-durak",
 	"private": true,
 	"type": "module",
 	"workspaces": ["packages/*"],

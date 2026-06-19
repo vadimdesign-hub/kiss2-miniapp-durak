@@ -1,4 +1,4 @@
-# kiss2-miniapp-template
+# kiss2-miniapp-durak
 
 Full-stack miniapp template for building features that run inside the Flutter host app's WebView. React frontend + Fastify backend in an npm workspaces monorepo.
 
@@ -47,7 +47,7 @@ In development, the frontend runs in **local mode** — it shows a login form in
 ## Project structure
 
 ```
-kiss2-miniapp-template/
+kiss2-miniapp-durak/
 ├── packages/
 │   ├── frontend/           React Router 7 SSR app (port 3000)
 │   │   ├── app/
